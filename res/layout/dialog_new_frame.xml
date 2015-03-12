@@ -1,0 +1,118 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/sceneCol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp" >
+    
+		<TextView
+	        android:id="@+id/SceneTextView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/scene" />
+	
+	    <NumberPicker
+	        android:id="@+id/SceneNumberPicker"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	       
+	        android:layout_marginBottom="10dp" />
+	    
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/takeCol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/sceneCol">
+	    
+        <TextView
+	        android:id="@+id/TakeTextView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/take" />
+	
+	    <NumberPicker
+	        android:id="@+id/TakeNumberPicker"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	       
+	        android:layout_marginBottom="10dp" />
+	    
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/trackCol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/takeCol">
+	    
+        <TextView
+	        android:id="@+id/TrackTextView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/track" />
+	
+	    <NumberPicker
+	        android:id="@+id/TrackNumberPicker"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+
+	        android:layout_marginBottom="10dp" />
+	    
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonsNewFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sceneCol"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonNewFrameCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:text="@string/button_cancel"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:id="@+id/buttonNewFrameOk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:text="@string/button_ok" 
+            style="?android:attr/buttonBarButtonStyle"/>
+	    
+    </LinearLayout>
+
+</RelativeLayout>

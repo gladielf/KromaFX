@@ -1,0 +1,2 @@
+/Users/gladielf/Documents/workspace/KromaFX/build/intermediates/classes/debug
+/Users/gladielf/Documents/workspace/KromaFX/build/intermediates/pre-dexed/debug/android-support-v4-ab9eb2520d6fc8769c96ba4ce5374ecc7fa76320.jar

@@ -1,0 +1,41 @@
+<resources>
+
+    <string name="app_name">Kroma FX</string>
+    <string name="app_name_drawer_open">Menu</string>
+    
+    <string name="dialogTitle">Nueva Toma Valida</string>
+    <string name="scene">Escena</string>
+    <string name="take">Toma</string>
+    <string name="track">Pista</string>
+    <string name="button_ok">Aceptar</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_today">Fecha de hoy</string>
+    
+    <string name="dialogFileNameTitle">Nombre del archivo</string>
+    <string name="set_file_name">Introduzca el nombre del archivo:</string>
+    <string name="file_extension">.TXT</string>
+    <string name="no_file_name">El campo nombre no puede estar vacio</string>
+    
+    <string name="drawer_option_save">Guardar</string>
+    <string name="drawer_option_load">Cargar</string>
+    <string name="drawer_option_share">Compartir</string>
+
+    <string name="messageNoFile">No se han guardado los datos</string>
+
+    <string name="dialogLoadFileTitle">Cargar archivo</string>
+    <string name="dialogLoaDFileNoFileSelected">No se ha selccionado ningún archivo</string>
+
+    <string name="dialogNoteTitle">Nueva Nota</string>
+    
+    <string name="dialogOverwriteFileTitle">¿Desea sobreescribir el archivo? </string>
+    <string name="dialogOverwriteFile">Ya existe el archivo. ¿Desea sobreescribirlo? </string>
+
+    <string name="dialogNoFile">Si no escribe ningún nombre para el archivo no se guardara ningún dato.</string>
+   
+    <string name="ic_menu_new">Nuevo</string>
+    <string name="ic_menu_remove">Eliminar</string>
+    <string name="ic_menu_note">Nota</string>
+   
+    <string name="textview">texto de prueba</string>
+
+</resources>
