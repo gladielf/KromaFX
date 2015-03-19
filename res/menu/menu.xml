@@ -4,19 +4,19 @@
     <item android:id="@+id/menu_new"
        	  android:title="@string/ic_menu_new"
        	  android:icon="@drawable/ic_action_new"
-       	  android:showAsAction="always"/>
+       	  android:showAsAction="ifRoom"/>
     
     
     <item android:id="@+id/menu_remove"
        	  android:title="@string/ic_menu_remove"
        	  android:icon="@drawable/ic_action_remove"
-       	  android:showAsAction="always"/>
+       	  android:showAsAction="ifRoom"/>
     
     
     <item android:id="@+id/menu_note"
           android:title="@string/ic_menu_note"
           android:icon="@drawable/ic_action_edit"
-          android:showAsAction="always"/>
+          android:showAsAction="ifRoom"/>
     
 
 </menu>

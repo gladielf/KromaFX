@@ -10,6 +10,8 @@
     <string name="button_ok">Aceptar</string>
     <string name="button_cancel">Cancelar</string>
     <string name="button_today">Fecha de hoy</string>
+    <string name="button_load">Cargar Archivo</string>
+    <string name="button_new">Nuevo Archivo</string>
     
     <string name="dialogFileNameTitle">Nombre del archivo</string>
     <string name="set_file_name">Introduzca el nombre del archivo:</string>
@@ -31,7 +33,10 @@
     <string name="dialogOverwriteFile">Ya existe el archivo. ¿Desea sobreescribirlo? </string>
 
     <string name="dialogNoFile">Si no escribe ningún nombre para el archivo no se guardara ningún dato.</string>
-   
+
+    <string name="dialogStartTitle">¿Que desea hacer?</string>
+    <string name="dialogStartMessage">¿Que desea hacer?</string>
+
     <string name="ic_menu_new">Nuevo</string>
     <string name="ic_menu_remove">Eliminar</string>
     <string name="ic_menu_note">Nota</string>

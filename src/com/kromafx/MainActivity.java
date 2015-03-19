@@ -1,8 +1,10 @@
 package com.kromafx;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -60,7 +62,15 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
     static TextView textViewTake;
     static TextView textViewTrack;
     static FrameLayout splitterLine;
-    int lastScene = 1; 
+
+    static TableRow tableRowLoad;
+    static TableRow splitterRowLoad;
+    static FrameLayout splitterLineLoad;
+    static TextView textViewSceneLoad;
+    static TextView textViewTakeLoad;
+    static TextView textViewTrackLoad;
+
+    int lastScene = 1;
     int lastTake = 0;
     int lastTrack = 0;
     
@@ -81,9 +91,25 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
         actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
-		
-		//Se establece el nombre del archivo que se utilizará
-		setFilename();
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.dialogStartTitle)
+                .setCancelable(false)
+                //.setMessage(R.string.dialogStartMessage)
+                .setNegativeButton(R.string.button_load, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        loadTakes();
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton(R.string.button_new, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setFilename(false);
+                        dialog.dismiss();
+
+                    }
+        }).show();
 		
 		takesList = new ArrayList<TakesItem>();
 		
@@ -92,8 +118,7 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		drawerList.add(new DrawerItems(getString(R.string.drawer_option_save), R.drawable.ic_action_save));
 		drawerList.add(new DrawerItems(getString(R.string.drawer_option_load), R.drawable.ic_action_paste));
 		drawerList.add(new DrawerItems(getString(R.string.drawer_option_share), R.drawable.ic_action_share));
-	
-		
+
 		tableLayout = (TableLayout)findViewById(R.id.TableLayout1);
 
 		ListView drawer = (ListView) findViewById(R.id.drawer);
@@ -112,15 +137,7 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
                         saveTakes(filename, Constants.FileDirectory);
                     }
                     else {
-                        setFilename();
-                        //TODO Si falla hay que modificar algo: un posible parametro para setfilename()?
-                        saveTakes(filename, Constants.FileDirectory);
-                        /*if(filename!=null) {
-                            saveTakes(filename, Constants.FileDirectory);
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext(),R.string.messageNoFile,Toast.LENGTH_SHORT).show();
-                        }*/
+                        setFilename(true);
                     }
 					break;
 					
@@ -190,15 +207,11 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 			
 		case R.id.menu_remove:
 			removeLastRow();
-			//Toast.makeText(getApplicationContext(),"Aún NO puede borrar filas",Toast.LENGTH_LONG).show();
 			return true;
 			
 		case R.id.menu_note:
-            //setFilename();
 			dialogNewNote();
-			//Toast.makeText(getApplicationContext(),"Aún NO puedes añadir notas",Toast.LENGTH_LONG).show();
 			return true;
-
 			
 		default:
 			return super.onOptionsItemSelected(item);
@@ -330,7 +343,9 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		if(tableLayout.getChildCount()>2){
 			tableLayout.removeViews(tableLayout.getChildCount()-2,2); //Borra las DOS ultimas lineas (Datos y separadora)
 			takesList.remove(takesList.size()-1);
-			saveTakes(filename , Constants.FileDirectory);
+            if (filename != null) {
+                saveTakes(filename, Constants.FileDirectory);
+            }
 		}else{
             Toast.makeText(getApplicationContext(), "No hay toma que eliminar", Toast.LENGTH_SHORT).show();
 		}
@@ -383,7 +398,7 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 	 * Funcion para guardar tomas
 	 */
 	public void saveTakes(String filename, String dirFile){
-		//TODO
+		//TODO faltaria guardar las notas
 		String ext_storage_state = Environment.getExternalStorageState();
 		File mediaStorage = new File(Environment.getExternalStorageDirectory() + Constants.FileDirectory);
 		if (ext_storage_state.equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
@@ -403,7 +418,7 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
                         Log.i(Constants.LogTag,"Archivo creado correctamente");
                     }
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 				}
 			}
@@ -463,7 +478,7 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 
 
         String path = Environment.getExternalStorageDirectory().toString() + Constants.FileDirectory;
-        Log.i(Constants.LogTag, "Path: " + path );
+        //Log.i(Constants.LogTag, "Path: " + path );
         File file = new File(path);
         File fileList[] = file.listFiles();
         int fileNumber = fileList.length;
@@ -500,17 +515,127 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
                     Toast.makeText(getApplicationContext(),R.string.dialogLoaDFileNoFileSelected,Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    if(!takesList.isEmpty()) {
+                        takesList.clear();
+                    }
                     //Se carga el archivo seleccionado
-                    Log.i(Constants.LogTag,"se va a cargar el archivo: " + fileSelected);
-                    Toast.makeText(getApplicationContext(),"se va a cargar el archivo: " + fileSelected,Toast.LENGTH_SHORT).show();
-                }
+                    File readFile = new File(Environment.getExternalStorageDirectory() + Constants.FileDirectory ,fileSelected);
 
+                    StringBuilder readText = new StringBuilder();
+
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(readFile));
+                        String line;
+                        int i;
+
+                        while ((line = br.readLine()) != null) {
+                            //esto es una linea de tomas
+                            if(line.substring(0,1).equals("|"))
+                                if (!line.substring(2, 3).equals("E")) {
+
+                                    char[] temp = line.toCharArray();
+                                    i = 0;
+
+                                    StringBuilder readScene = new StringBuilder();
+                                    for (i = 1; i < 9; i++) {
+                                        //Aqui obtenemos la escena
+                                        // las barras son los caracteres 0,9,16,24
+                                        if (temp[i] >= '0' && temp[i] <= '9') {
+                                            readScene.append(temp[i]);
+                                        }
+                                    }
+                                    //una vez hemos obenido el valor completo lo añadimos al array
+
+
+                                    StringBuilder readTake = new StringBuilder();
+                                    for (i = 10; i < 16; i++) {
+                                        //Aqui obtenemos la toma
+                                        // las barras son los caracteres 0,9,16,24
+                                        if (temp[i] >= '0' && temp[i] <= '9') {
+                                            readTake.append(temp[i]);
+                                        }
+                                    }
+
+                                    StringBuilder readTrack = new StringBuilder();
+                                    for (i = 17; i < 24; i++) {
+                                        //Aqui obtenemos la pista
+                                        // las barras son los caracteres 0,9,16,24
+                                        if (temp[i] >= '0' && temp[i] <= '9') {
+                                            readTrack.append(temp[i]);
+                                        }
+                                    }
+
+
+                                    takesList.add(new TakesItem(Integer.parseInt(readScene.toString()), Integer.parseInt(readTake.toString()), Integer.parseInt(readTrack.toString())));
+                                    Log.i(Constants.LogTag, "La escena es : " + readScene + " la toma es: " + readTake + " la pista es: " + readTrack);
+
+                                }
+                            else {
+                                Log.i(Constants.LogTag, "Esta es una linea de Notas");
+                                // aqui leeremos los datos de las notas ¿que iran despues de las tomas?
+                            }
+                            //readText.append(line);
+                            //readText.append('\n');
+                        }
+                        br.close();
+
+                    }catch (IOException e){
+
+                    }
+                    //Al cargar el archivo puedo poner ese mismo archivo para sobreescribirlo?
+                    //Log.i(Constants.LogTag,"se va a cargar el archivo: " + fileSelected);
+                    Toast.makeText(getApplicationContext(),"se va a cargar el archivo: " + fileSelected,Toast.LENGTH_SHORT).show();
+                    //Log.i(Constants.LogTag, "el texto es: " + readText);
+
+                    //TODO una vez se tienen los datos en el array se cargan en pantalla
+                    if(tableLayout.getChildCount()>2) {
+                        tableLayout.removeViews(2,tableLayout.getChildCount()-2); //Borra Todas las lineas menos las dos primeras que forman la cabecera
+                    }
+
+                    for (int j = 0 ; j< takesList.size(); j++){
+                        tableRowLoad = new TableRow(MainActivity.this);
+                        splitterRowLoad = new TableRow(MainActivity.this);
+                        splitterLineLoad = new FrameLayout(MainActivity.this);
+                        textViewSceneLoad = new TextView(MainActivity.this);
+                        textViewTakeLoad = new TextView(MainActivity.this);
+                        textViewTrackLoad = new TextView(MainActivity.this);
+
+                        tableRowLoad.setPadding(5, 5, 5, 5);
+
+                        textViewSceneLoad.setText(Integer.toString(takesList.get(j).getScene()));
+                        textViewSceneLoad.setGravity(Gravity.CENTER);
+                        lastScene = takesList.get(j).getScene();
+
+                        textViewTakeLoad.setText(Integer.toString(takesList.get(j).getTake()));
+                        textViewTakeLoad.setGravity(Gravity.CENTER);
+                        lastTake = takesList.get(j).getTake();
+
+                        textViewTrackLoad.setText(Integer.toString(takesList.get(j).getTrack()));
+                        textViewTrackLoad.setGravity(Gravity.CENTER);
+                        lastTrack = takesList.get(j).getTrack();
+
+                        tableRowLoad.addView(textViewSceneLoad);
+                        tableRowLoad.addView(textViewTakeLoad);
+                        tableRowLoad.addView(textViewTrackLoad);
+
+
+                        splitterRowLoad.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                        TableRow.LayoutParams splitterLineParams = new TableRow.LayoutParams(LayoutParams.MATCH_PARENT,2);
+                        splitterLineParams.span = 3; //Este valor indica el numero de columnas que ocupara la linea
+                        splitterLineLoad.setBackgroundColor(Color.parseColor("#000000"));
+                        splitterRowLoad.addView(splitterLineLoad, splitterLineParams);
+
+
+                        tableLayout.addView(tableRowLoad);
+                        tableLayout.addView(splitterRowLoad);
+                    }
+
+                    filename = fileSelected;
+                    dialogLoadFile.dismiss();
+                }
             }
         });
-
         dialogLoadFile.show();
-		//Toast.makeText(getApplicationContext(), "Vamos a cargar las tomas del dia elegido", Toast.LENGTH_SHORT).show();
-		
 	}
 	
 	/*
@@ -522,15 +647,8 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
 		
 	}
 	
-	public void setFilename(){
-		//TODO
-		//Será un dialog nada más iniciar la aplicación y comprobara la existencia de dicho archivo y de ser así pedira si se reescribe, no o su lo desea cargar para seguir desde donde estaba
-		
-		/*Time today =new Time(Time.getCurrentTimezone());
-        today.setToNow();
-		filename = today.format("KFX_%Y%m%d"+ Constants.TxtExtension);
-		*/
-		
+	public void setFilename(final boolean save){
+
 		final Dialog dialogFileName = new Dialog(MainActivity.this);
         dialogFileName.setTitle(R.string.dialogFileNameTitle);
         dialogFileName.setContentView(R.layout.dialog_file_name);
@@ -569,20 +687,21 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
                     if(file.exists()){
                         Log.i(Constants.LogTag,"el archivo ya existe: " + newFilename);
                         new AlertDialog.Builder(MainActivity.this)
-                        //.setTitle(getResources().getString(R.string.dialogOverwriteFileTitle))
+                        .setCancelable(false)
                         .setMessage(R.string.dialogOverwriteFile)
                         .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO se cierra el dialog para sobreescribir y hacer cambios
                                 dialog.dismiss();
                             }
                         })
                         .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO se cierra el dialog y ¿se borra el archivo?
                                 filename = newFilename;
+                                if (save){
+                                    saveTakes(filename,Constants.FileDirectory);
+                                }
                                 dialog.dismiss();
                                 dialogFileName.dismiss();
                             }
@@ -590,13 +709,15 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
                     }
                     else {
                         filename = newFilename;
+                        if (save){
+                            saveTakes(filename,Constants.FileDirectory);
+                        }
                         dialogFileName.dismiss();
+
+
                     }
 				}
-				
-				// TODO Auto-generated method stub
-				//se comprobara la existencia del archivo y de ser así pedira si se reescribe, no o su lo desea cargar para seguir desde donde estaba
-				
+
 			}
 		});
         
@@ -605,9 +726,8 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
         {
          @Override
          public void onClick(View v) {
-        	 //TODO
-        	 //al pulsar cancelar se debera cerrar la app
              new AlertDialog.Builder(MainActivity.this)
+             .setCancelable(false)
              .setMessage(R.string.dialogNoFile)
              .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
                  @Override
@@ -621,7 +741,6 @@ public class MainActivity extends Activity implements NumberPicker.OnValueChange
                      dialogFileName.dismiss();
                  }
              }).show();
-        	 //dialogFileName.dismiss();
           }    
          });
        
